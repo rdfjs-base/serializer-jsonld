@@ -7,62 +7,112 @@ var testData = require('rdf-test-data')(rdf)
 var testUtils = require('rdf-test-utils')(rdf)
 var JsonLdSerializer = require('../')
 
+var simpleGraph = rdf.createGraph()
+
+simpleGraph.add(rdf.createTriple(
+  rdf.createNamedNode('http://example.org/subject'),
+  rdf.createNamedNode('http://example.org/predicate'),
+  rdf.createLiteral('object')
+))
+
 describe('JSON-LD serializer', function () {
-  var simpleGraph = rdf.createGraph()
+  describe('instance API', function () {
+    describe('callback API', function () {
+      it('should be supported', function (done) {
+        var serializer = new JsonLdSerializer()
 
-  simpleGraph.add(rdf.createTriple(
-    rdf.createNamedNode('http://example.org/subject'),
-    rdf.createNamedNode('http://example.org/predicate'),
-    rdf.createLiteral('object')
-  ))
-
-  describe('callback API', function () {
-    it('should be supported', function (done) {
-      var serializer = new JsonLdSerializer()
-
-      Promise.resolve(new Promise(function (resolve, reject) {
-        serializer.serialize(simpleGraph, function (error) {
-          if (error) {
-            reject(error)
-          } else {
-            resolve()
-          }
-        })
-      })).then(function () {
-        done()
-      }).catch(function (error) {
-        done(error)
-      })
-    })
-  })
-
-  describe('Promise API', function () {
-    it('should be supported', function (done) {
-      var serializer = new JsonLdSerializer()
-
-      serializer.serialize(simpleGraph).then(function () {
-        done()
-      }).catch(function (error) {
-        done(error)
-      })
-    })
-  })
-
-  describe('Stream API', function () {
-    it('should be supported', function (done) {
-      var serializer = new JsonLdSerializer()
-      var jsonGraph
-
-      serializer.stream(simpleGraph).on('data', function (data) {
-        jsonGraph = data
-      }).on('end', function () {
-        if (!jsonGraph) {
-          done('no data streamed')
-        } else {
+        Promise.resolve(new Promise(function (resolve, reject) {
+          serializer.serialize(simpleGraph, function (error) {
+            if (error) {
+              reject(error)
+            } else {
+              resolve()
+            }
+          })
+        })).then(function () {
           done()
-        }
-      }).on('error', function (error) {
-        done(error)
+        }).catch(function (error) {
+          done(error)
+        })
+      })
+    })
+
+    describe('Promise API', function () {
+      it('should be supported', function (done) {
+        var serializer = new JsonLdSerializer()
+
+        serializer.serialize(simpleGraph).then(function () {
+          done()
+        }).catch(function (error) {
+          done(error)
+        })
+      })
+    })
+
+    describe('Stream API', function () {
+      it('should be supported', function (done) {
+        var serializer = new JsonLdSerializer()
+        var jsonGraph
+
+        serializer.stream(simpleGraph).on('data', function (data) {
+          jsonGraph = data
+        }).on('end', function () {
+          if (!jsonGraph) {
+            done('no data streamed')
+          } else {
+            done()
+          }
+        }).on('error', function (error) {
+          done(error)
+        })
+      })
+    })
+  })
+
+  describe('static API', function () {
+    describe('callback API', function () {
+      it('should be supported', function (done) {
+        Promise.resolve(new Promise(function (resolve, reject) {
+          JsonLdSerializer.serialize(simpleGraph, function (error) {
+            if (error) {
+              reject(error)
+            } else {
+              resolve()
+            }
+          })
+        })).then(function () {
+          done()
+        }).catch(function (error) {
+          done(error)
+        })
+      })
+    })
+
+    describe('Promise API', function () {
+      it('should be supported', function (done) {
+        JsonLdSerializer.serialize(simpleGraph).then(function () {
+          done()
+        }).catch(function (error) {
+          done(error)
+        })
+      })
+    })
+
+    describe('Stream API', function () {
+      it('should be supported', function (done) {
+        var jsonGraph
+
+        JsonLdSerializer.stream(simpleGraph).on('data', function (data) {
+          jsonGraph = data
+        }).on('end', function () {
+          if (!jsonGraph) {
+            done('no data streamed')
+          } else {
+            done()
+          }
+        }).on('error', function (error) {
+          done(error)
+        })
       })
     })
   })

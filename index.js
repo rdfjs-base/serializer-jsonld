@@ -78,4 +78,11 @@ JsonLdSerializer.prototype.serialize = function (graph, done) {
   })
 }
 
+// add singleton methods to class
+var instance = new JsonLdSerializer()
+
+for (var property in instance) {
+  JsonLdSerializer[property] = instance[property]
+}
+
 module.exports = JsonLdSerializer
