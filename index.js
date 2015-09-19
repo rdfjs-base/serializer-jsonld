@@ -1,7 +1,8 @@
+var rdf = require('rdf-ext')()
 var util = require('util')
 var AbstractSerializer = require('rdf-serializer-abstract')
 
-function JsonLdSerializer (rdf) {
+function JsonLdSerializer () {
   AbstractSerializer.call(this, rdf)
 }
 

@@ -5,7 +5,7 @@ var jsonld = require('jsonld')
 var rdf = require('rdf-ext')()
 var testData = require('rdf-test-data')(rdf)
 var testUtils = require('rdf-test-utils')(rdf)
-var JsonLdSerializer = require('../').bind(null, rdf)
+var JsonLdSerializer = require('../')
 
 describe('JSON-LD serializer', function () {
   var simpleGraph = rdf.createGraph()

@@ -23,12 +23,12 @@
   },
   "homepage": "https://github.com/rdf-ext/rdf-serializer-jsonld",
   "dependencies": {
+    "rdf-ext": "^0.3.0",
     "rdf-serializer-abstract": "^0.1.0"
   },
   "devDependencies": {
     "jsonld": "^0.3.26",
     "mocha": "^2.2.5",
-    "rdf-ext": "^0.3.0",
     "rdf-test-data": "^0.1.0",
     "rdf-test-utils": "^0.2.0"
   }
