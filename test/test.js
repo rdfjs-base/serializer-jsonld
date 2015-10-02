@@ -1,10 +1,9 @@
 /* global describe, it */
-
 var assert = require('assert')
 var jsonld = require('jsonld')
-var rdf = require('rdf-ext')()
-var testData = require('rdf-test-data')(rdf)
-var testUtils = require('rdf-test-utils')(rdf)
+var rdf = require('rdf-ext')
+var testData = require('rdf-test-data')
+var testUtils = require('rdf-test-utils')
 var JsonLdSerializer = require('../')
 
 var simpleGraph = rdf.createGraph()
