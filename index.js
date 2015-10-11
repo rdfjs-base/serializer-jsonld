@@ -16,7 +16,7 @@ JsonLdSerializer.prototype.serialize = function (graph, done) {
     var subjects = {}
 
     var subjectIndex = function (subject) {
-      var value = subject.valueOf()
+      var value = subject.nominalValue
 
       if (typeof subjects[value] === 'undefined') {
         if (subject.interfaceName === 'BlankNode') {
@@ -32,7 +32,7 @@ JsonLdSerializer.prototype.serialize = function (graph, done) {
     }
 
     var objectValue = function (object) {
-      var value = object.valueOf()
+      var value = object.nominalValue
 
       if (object.interfaceName === 'NamedNode') {
         return { '@id': value }
@@ -41,8 +41,8 @@ JsonLdSerializer.prototype.serialize = function (graph, done) {
       } else {
         if (object.language) {
           return { '@language': object.language, '@value': value }
-        } else if (object.datatype && object.datatype.valueOf() !== 'http://www.w3.org/2001/XMLSchema#string') {
-          return { '@type': object.datatype.valueOf(), '@value': value }
+        } else if (object.datatype && !object.datatype.equals('http://www.w3.org/2001/XMLSchema#string')) {
+          return { '@type': object.datatype.nominalValue, '@value': value }
         } else {
           return value
         }
@@ -51,14 +51,14 @@ JsonLdSerializer.prototype.serialize = function (graph, done) {
 
     graph.forEach(function (triple) {
       var index = subjectIndex(triple.subject)
-      var predicateValue = triple.predicate.valueOf()
+      var predicateValue = triple.predicate.nominalValue
 
       if (predicateValue === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
         if (typeof jsonGraph[index]['@type'] === 'undefined') {
           jsonGraph[index]['@type'] = []
         }
 
-        jsonGraph[index]['@type'].push(triple.object.valueOf())
+        jsonGraph[index]['@type'].push(triple.object.nominalValue)
       } else {
         if (typeof jsonGraph[index][predicateValue] === 'undefined') {
           jsonGraph[index][predicateValue] = objectValue(triple.object)
