@@ -116,6 +116,24 @@ describe('JSON-LD serializer', function () {
     })
   })
 
+  describe('options', function () {
+    it('outputString should convert output to String', function (done) {
+      Promise.all([
+        (new JsonLdSerializer({outputString: false})).serialize(simpleGraph).then(function (serialized) {
+          assert.equal(typeof serialized, 'object')
+        }),
+
+        (new JsonLdSerializer({outputString: true})).serialize(simpleGraph).then(function (serialized) {
+          assert.equal(typeof serialized, 'string')
+        })
+      ]).then(function () {
+        done()
+      }).catch(function (error) {
+        done(error)
+      })
+    })
+  })
+
   describe('example data', function () {
     it('card should be serialized', function (done) {
       var serializer = new JsonLdSerializer()

@@ -2,13 +2,17 @@ var rdf = require('rdf-ext')
 var util = require('util')
 var AbstractSerializer = require('rdf-serializer-abstract')
 
-function JsonLdSerializer () {
+function JsonLdSerializer (options) {
+  this.options = options || {}
+
   AbstractSerializer.call(this, rdf)
 }
 
 util.inherits(JsonLdSerializer, AbstractSerializer)
 
 JsonLdSerializer.prototype.serialize = function (graph, done) {
+  var self = this
+
   return new Promise(function (resolve) {
     done = done || function () {}
 
@@ -71,6 +75,10 @@ JsonLdSerializer.prototype.serialize = function (graph, done) {
         }
       }
     })
+
+    if (self.options.outputString) {
+      jsonGraph = JSON.stringify(jsonGraph)
+    }
 
     done(null, jsonGraph)
 
