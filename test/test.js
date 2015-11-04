@@ -143,7 +143,7 @@ describe('JSON-LD serializer', function () {
           return jsonld.promises().normalize(cardJson)
         }),
 
-        testUtils.p.readFile('support/card.json', __dirname).then(function (cardString) {
+        testUtils.readFile('support/card.json', __dirname).then(function (cardString) {
           return jsonld.promises().normalize(JSON.parse(cardString))
         })
       ]).then(function (results) {
