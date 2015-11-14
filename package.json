@@ -1,6 +1,6 @@
 {
   "name": "rdf-serializer-jsonld",
-  "version": "0.3.0-rc1",
+  "version": "0.3.0-rc2",
   "description": "JSON-LD serializer that follows the RDF Interface specification",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,7 @@
     "rdf-serializer-abstract": "^0.3.0-rc1"
   },
   "devDependencies": {
-    "jsonld": "^0.3.26",
+    "jsonld": "^0.4.2",
     "mocha": "^2.3.3",
     "rdf-test-data": "^0.3.0-rc1",
     "rdf-test-utils": "^0.3.0-rc1"
