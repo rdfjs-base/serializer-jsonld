@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/rdf-ext/rdf-serializer-jsonld",
   "dependencies": {
+    "inherits": "^2.0.1",
     "rdf-ext": "^0.3.0",
     "rdf-serializer-abstract": "^0.3.0"
   },

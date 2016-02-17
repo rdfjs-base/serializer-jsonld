@@ -1,5 +1,5 @@
 var rdf = require('rdf-ext')
-var util = require('util')
+var inherits = require('inherits')
 var AbstractSerializer = require('rdf-serializer-abstract')
 
 function JsonLdSerializer (options) {
@@ -8,7 +8,7 @@ function JsonLdSerializer (options) {
   AbstractSerializer.call(this, rdf)
 }
 
-util.inherits(JsonLdSerializer, AbstractSerializer)
+inherits(JsonLdSerializer, AbstractSerializer)
 
 JsonLdSerializer.prototype.serialize = function (graph, done) {
   var self = this
