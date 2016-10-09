@@ -34,5 +34,17 @@
     "rdf-data-model": "git://github.com/rdf-ext/rdf-data-model.git#develop",
     "rdf-ext-browser-test": "^0.9.0",
     "standard": "^7.0.1"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015"
+          ]
+        }
+      ]
+    ]
   }
 }
