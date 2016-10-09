@@ -1,158 +1,95 @@
+'use strict'
+
 /* global describe, it */
-var assert = require('assert')
-var jsonld = require('jsonld')
-var rdf = require('rdf-ext')
-var testData = require('rdf-test-data')
-var testUtils = require('rdf-test-utils')
-var JsonLdSerializer = require('../')
 
-var simpleGraph = rdf.createGraph()
+const assert = require('assert')
+const rdf = require('rdf-data-model')
+const EventEmitter = require('events').EventEmitter
+const JsonLdSerializer = require('..')
 
-simpleGraph.add(rdf.createTriple(
-  rdf.createNamedNode('http://example.org/subject'),
-  rdf.createNamedNode('http://example.org/predicate'),
-  rdf.createLiteral('object')
-))
+function streamToPromise (stream) {
+  return new Promise((resolve, reject) => {
+    stream.on('end', resolve)
+    stream.on('error', reject)
+  })
+}
 
-describe('JSON-LD serializer', function () {
-  describe('instance API', function () {
-    describe('callback API', function () {
-      it('should be supported', function (done) {
-        var serializer = new JsonLdSerializer()
+function streamToPromiseError (stream) {
+  return new Promise((resolve, reject) => {
+    stream.on('end', reject)
+    stream.on('error', resolve)
+  })
+}
 
-        Promise.resolve(new Promise(function (resolve, reject) {
-          serializer.serialize(simpleGraph, function (error) {
-            if (error) {
-              reject(error)
-            } else {
-              resolve()
-            }
-          })
-        })).then(function () {
-          done()
-        }).catch(function (error) {
-          done(error)
-        })
-      })
-    })
-
-    describe('Promise API', function () {
-      it('should be supported', function (done) {
-        var serializer = new JsonLdSerializer()
-
-        serializer.serialize(simpleGraph).then(function () {
-          done()
-        }).catch(function (error) {
-          done(error)
-        })
-      })
-    })
-
-    describe('Stream API', function () {
-      it('should be supported', function (done) {
-        var serializer = new JsonLdSerializer()
-        var jsonGraph
-
-        serializer.stream(simpleGraph).on('data', function (data) {
-          jsonGraph = data
-        }).on('end', function () {
-          if (!jsonGraph) {
-            done('no data streamed')
-          } else {
-            done()
-          }
-        }).on('error', function (error) {
-          done(error)
-        })
-      })
-    })
+describe('rdf-serializer-jsonld', () => {
+  it('should be a constructor', () => {
+    assert.equal(typeof JsonLdSerializer, 'function')
   })
 
-  describe('static API', function () {
-    describe('callback API', function () {
-      it('should be supported', function (done) {
-        Promise.resolve(new Promise(function (resolve, reject) {
-          JsonLdSerializer.serialize(simpleGraph, function (error) {
-            if (error) {
-              reject(error)
-            } else {
-              resolve()
-            }
-          })
-        })).then(function () {
-          done()
-        }).catch(function (error) {
-          done(error)
-        })
-      })
-    })
+  it('should have a .import method', () => {
+    let serializer = new JsonLdSerializer()
 
-    describe('Promise API', function () {
-      it('should be supported', function (done) {
-        JsonLdSerializer.serialize(simpleGraph).then(function () {
-          done()
-        }).catch(function (error) {
-          done(error)
-        })
-      })
-    })
-
-    describe('Stream API', function () {
-      it('should be supported', function (done) {
-        var jsonGraph
-
-        JsonLdSerializer.stream(simpleGraph).on('data', function (data) {
-          jsonGraph = data
-        }).on('end', function () {
-          if (!jsonGraph) {
-            done('no data streamed')
-          } else {
-            done()
-          }
-        }).on('error', function (error) {
-          done(error)
-        })
-      })
-    })
+    assert.equal(typeof serializer.import, 'function')
   })
 
-  describe('options', function () {
-    it('outputString should convert output to String', function (done) {
-      Promise.all([
-        (new JsonLdSerializer({outputString: false})).serialize(simpleGraph).then(function (serialized) {
-          assert.equal(typeof serialized, 'object')
-        }),
+  it('should forward the end event', () => {
+    let input = new EventEmitter()
+    let serializer = new JsonLdSerializer()
+    let emitted = false
 
-        (new JsonLdSerializer({outputString: true})).serialize(simpleGraph).then(function (serialized) {
-          assert.equal(typeof serialized, 'string')
-        })
-      ]).then(function () {
-        done()
-      }).catch(function (error) {
-        done(error)
-      })
+    serializer.on('end', () => {
+      emitted = true
     })
+
+    let result = streamToPromise(input).then(() => {
+      assert.equal(emitted, true)
+    })
+
+    serializer.import(input)
+
+    input.emit('end')
+
+    return result
   })
 
-  describe('example data', function () {
-    it('card should be serialized', function (done) {
-      var serializer = new JsonLdSerializer()
+  it('should forward the error event', () => {
+    let input = new EventEmitter()
+    let serializer = new JsonLdSerializer()
+    let emitted = false
 
-      Promise.all([
-        serializer.serialize(testData.cardGraph).then(function (cardJson) {
-          return jsonld.promises().normalize(cardJson)
-        }),
-
-        testUtils.readFile('support/card.json', __dirname).then(function (cardString) {
-          return jsonld.promises().normalize(JSON.parse(cardString))
-        })
-      ]).then(function (results) {
-        assert.deepEqual(results[0], results[1])
-      }).then(function () {
-        done()
-      }).catch(function (error) {
-        done(error)
-      })
+    serializer.on('error', () => {
+      emitted = true
     })
+
+    let result = streamToPromiseError(input).then(() => {
+      assert.equal(emitted, true)
+    })
+
+    serializer.import(input)
+
+    input.emit('error')
+
+    return result
+  })
+
+  it('should serialize incoming quads', () => {
+    let input = new EventEmitter()
+    let serializer = new JsonLdSerializer()
+    let quad = rdf.quad(rdf.namedNode('http://example.org/subject'), rdf.namedNode('http://example.org/predicate'),
+      rdf.literal('object'), rdf.namedNode('http://example.org/graph'))
+
+    serializer.import(input)
+
+    let result = streamToPromise(serializer).then(() => {
+      assert.deepEqual(serializer.read(), [{
+        '@id': 'http://example.org/subject',
+        'http://example.org/predicate': 'object'
+      }])
+    })
+
+    input.emit('data', quad)
+    input.emit('end')
+
+    return result
   })
 })

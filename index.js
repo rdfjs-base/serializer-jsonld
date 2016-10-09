@@ -1,96 +1,102 @@
-var rdf = require('rdf-ext')
-var inherits = require('inherits')
-var AbstractSerializer = require('rdf-serializer-abstract')
+const Readable = require('stream').Readable
 
-function JsonLdSerializer (options) {
-  this.options = options || {}
+class JsonLdSerializer extends Readable {
+  constructor (options) {
+    super()
 
-  AbstractSerializer.call(this, rdf)
-}
+    this.options = options || {}
 
-inherits(JsonLdSerializer, AbstractSerializer)
+    this._readableState.objectMode = true
+    this._read = () => {}
 
-JsonLdSerializer.prototype.serialize = function (graph, done) {
-  var self = this
+    this.graph = []
+    this.subjects = {}
+  }
 
-  return new Promise(function (resolve) {
-    done = done || function () {}
+  import (stream) {
+    stream.on('data', (quad) => {
+      let index = this.subjectIndex(quad.subject)
+      let property = quad.predicate.value
 
-    var jsonGraph = []
-    var subjects = {}
-
-    var subjectIndex = function (subject) {
-      var value = subject.nominalValue
-
-      if (typeof subjects[value] === 'undefined') {
-        if (subject.interfaceName === 'BlankNode') {
-          jsonGraph.push({ '@id': '_:' + value })
-        } else {
-          jsonGraph.push({ '@id': value })
+      if (property === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
+        if (typeof this.graph[index]['@type'] === 'undefined') {
+          this.graph[index]['@type'] = []
         }
 
-        subjects[value] = jsonGraph.length - 1
-      }
-
-      return subjects[value]
-    }
-
-    var objectValue = function (object) {
-      var value = object.nominalValue
-
-      if (object.interfaceName === 'NamedNode') {
-        return { '@id': value }
-      } else if (object.interfaceName === 'BlankNode') {
-        return { '@id': '_:' + value }
+        this.graph[index]['@type'].push(triple.object.value)
       } else {
-        if (object.language) {
-          return { '@language': object.language, '@value': value }
-        } else if (object.datatype && !object.datatype.equals('http://www.w3.org/2001/XMLSchema#string')) {
-          return { '@type': object.datatype.nominalValue, '@value': value }
+        if (typeof this.graph[index][property] === 'undefined') {
+          this.graph[index][property] = JsonLdSerializer.objectValue(quad.object)
         } else {
-          return value
-        }
-      }
-    }
-
-    graph.forEach(function (triple) {
-      var index = subjectIndex(triple.subject)
-      var predicateValue = triple.predicate.nominalValue
-
-      if (predicateValue === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
-        if (typeof jsonGraph[index]['@type'] === 'undefined') {
-          jsonGraph[index]['@type'] = []
-        }
-
-        jsonGraph[index]['@type'].push(triple.object.nominalValue)
-      } else {
-        if (typeof jsonGraph[index][predicateValue] === 'undefined') {
-          jsonGraph[index][predicateValue] = objectValue(triple.object)
-        } else {
-          if (!Array.isArray(jsonGraph[index][predicateValue])) {
-            jsonGraph[index][predicateValue] = [jsonGraph[index][predicateValue]]
+          if (!Array.isArray(this.graph[index][property])) {
+            this.graph[index][property] = [this.graph[index][property]]
           }
 
-          jsonGraph[index][predicateValue].push(objectValue(triple.object))
+          this.graph[index][property].push(JsonLdSerializer.objectValue(quad.object))
         }
       }
     })
 
-    if (self.options.outputString) {
-      jsonGraph = JSON.stringify(jsonGraph)
+    stream.on('end', () => {
+      if (this.options.outputFormat === 'string') {
+        this.push(JSON.stringify(this.graph))
+      } else {
+        this.push(this.graph)
+      }
+
+      this.graph = []
+      this.subjects = {}
+
+      this.emit('end')
+    })
+
+    stream.on('error', (err) => {
+      this.graph = []
+      this.subjects = {}
+
+      this.emit('error', err)
+    })
+
+    return this
+  }
+
+  subjectIndex (subject) {
+    if (typeof this.subjects[subject.value] === 'undefined') {
+      if (subject.termType === 'BlankNode') {
+        this.graph.push({'@id': '_:' + subject.value})
+      } else {
+        this.graph.push({'@id': subject.value})
+      }
+
+      this.subjects[subject.value] = this.graph.length - 1
     }
 
-    done(null, jsonGraph)
+    return this.subjects[subject.value]
+  }
 
-    resolve(jsonGraph)
-  })
-}
+  static objectValue (object) {
+    if (object.termType === 'NamedNode') {
+      return {'@id': object.value}
+    } else if (object.termType === 'BlankNode') {
+      return {'@id': '_:' + object.value}
+    } else {
+      if (object.language) {
+        return {'@language': object.language, '@value': object.value}
+      } else if (object.datatype && !object.datatype.value === 'http://www.w3.org/2001/XMLSchema#string') {
+        return {'@type': object.datatype.value, '@value': object.value}
+      } else {
+        return object.value
+      }
+    }
+  }
 
-// add singleton methods to class
-var instance = new JsonLdSerializer()
+  static import (stream) {
+    let serializer = new JsonLdSerializer()
 
-for (var property in instance) {
-  JsonLdSerializer[property] = instance[property]
+    serializer.import(stream)
+
+    return serializer
+  }
 }
 
 module.exports = JsonLdSerializer
