@@ -26,7 +26,7 @@ describe('rdf-serializer-jsonld', () => {
       '@graph': {
         '@id': 'http://example.org/subject',
         'http://example.org/predicate': 'object1'
-      },
+      }
     }, {
       '@id': 'http://example.org/graph',
       '@graph': {
@@ -66,7 +66,7 @@ describe('rdf-serializer-jsonld', () => {
       '@graph': {
         '@id': 'http://example.org/subject',
         '@type': 'http://example.org/type'
-      },
+      }
     }]
 
     const input = new Readable()
@@ -99,7 +99,7 @@ describe('rdf-serializer-jsonld', () => {
       '@graph': {
         '@id': '_:b1',
         'http://example.org/predicate': 'object'
-      },
+      }
     }]
 
     const input = new Readable()
@@ -134,7 +134,7 @@ describe('rdf-serializer-jsonld', () => {
         'http://example.org/predicate': {
           '@id': 'http://example.org/object'
         }
-      },
+      }
     }]
 
     const input = new Readable()
@@ -169,7 +169,7 @@ describe('rdf-serializer-jsonld', () => {
         'http://example.org/predicate': {
           '@id': '_:b1'
         }
-      },
+      }
     }]
 
     const input = new Readable()
@@ -205,7 +205,7 @@ describe('rdf-serializer-jsonld', () => {
           '@language': 'en',
           '@value': 'object'
         }
-      },
+      }
     }]
 
     const input = new Readable()
@@ -241,7 +241,7 @@ describe('rdf-serializer-jsonld', () => {
           '@type': 'http://example.org/datatype',
           '@value': 'object'
         }
-      },
+      }
     }]
 
     const input = new Readable()
