@@ -1,6 +1,6 @@
 # rdf-serializer-jsonld
 
 [![Build Status](https://travis-ci.org/rdf-ext/rdf-serializer-jsonld.svg?branch=master)](https://travis-ci.org/rdf-ext/rdf-serializer-jsonld)
-[![NPM Version](https://img.shields.io/npm/v/rdf-serializer-jsonld.svg?style=flat)](https://npm.im/rdf-serializer-jsonld)
+[![npm version](https://badge.fury.io/js/rdf-serializer-jsonld.svg)](https://badge.fury.io/js/rdf-serializer-jsonld)
 
-JSON-LD serializer that follows the RDF Interface specification.
+JSON-LD serializer that implements the [RDFJS Sink interface](https://github.com/rdfjs/representation-task-force/).
