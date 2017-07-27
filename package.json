@@ -1,6 +1,6 @@
 {
   "name": "rdf-serializer-jsonld",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "JSON-LD serializer that implements the RDFJS Sink Interfaces",
   "main": "index.js",
   "scripts": {
