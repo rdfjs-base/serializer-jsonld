@@ -9,51 +9,6 @@ const JsonLdSerializer = require('..')
 describe('rdf-serializer-jsonld', () => {
   sinkTest(JsonLdSerializer, {readable: true})
 
-  it('should serialize incoming quads', () => {
-    const quad1 = rdf.quad(
-      rdf.namedNode('http://example.org/subject'),
-      rdf.namedNode('http://example.org/predicate'),
-      rdf.literal('object1'))
-
-    const quad2 = rdf.quad(
-      rdf.namedNode('http://example.org/subject'),
-      rdf.namedNode('http://example.org/predicate'),
-      rdf.literal('object2'),
-      rdf.namedNode('http://example.org/graph'))
-
-    const jsonld = [{
-      '@graph': {
-        '@id': 'http://example.org/subject',
-        'http://example.org/predicate': 'object1'
-      }
-    }, {
-      '@id': 'http://example.org/graph',
-      '@graph': {
-        '@id': 'http://example.org/subject',
-        'http://example.org/predicate': 'object2'
-      }
-    }]
-
-    const input = new Readable()
-
-    input._readableState.objectMode = true
-
-    input._read = () => {
-      input.push(quad1)
-      input.push(quad2)
-      input.push(null)
-    }
-
-    const serializer = new JsonLdSerializer()
-    const stream = serializer.import(input)
-
-    return Promise.resolve().then(() => {
-      assert.deepEqual(stream.read(), jsonld)
-
-      return rdf.waitFor(stream)
-    })
-  })
-
   it('should serialize rdf:type', () => {
     const quad = rdf.quad(
       rdf.namedNode('http://example.org/subject'),
@@ -61,10 +16,8 @@ describe('rdf-serializer-jsonld', () => {
       rdf.namedNode('http://example.org/type'))
 
     const jsonld = [{
-      '@graph': {
-        '@id': 'http://example.org/subject',
-        '@type': 'http://example.org/type'
-      }
+      '@id': 'http://example.org/subject',
+      '@type': 'http://example.org/type'
     }]
 
     const input = new Readable()
@@ -93,10 +46,8 @@ describe('rdf-serializer-jsonld', () => {
       rdf.literal('object'))
 
     const jsonld = [{
-      '@graph': {
-        '@id': '_:b1',
-        'http://example.org/predicate': 'object'
-      }
+      '@id': '_:b1',
+      'http://example.org/predicate': 'object'
     }]
 
     const input = new Readable()
@@ -125,11 +76,9 @@ describe('rdf-serializer-jsonld', () => {
       rdf.namedNode('http://example.org/object'))
 
     const jsonld = [{
-      '@graph': {
-        '@id': 'http://example.org/subject',
-        'http://example.org/predicate': {
-          '@id': 'http://example.org/object'
-        }
+      '@id': 'http://example.org/subject',
+      'http://example.org/predicate': {
+        '@id': 'http://example.org/object'
       }
     }]
 
@@ -159,11 +108,9 @@ describe('rdf-serializer-jsonld', () => {
       rdf.blankNode('b1'))
 
     const jsonld = [{
-      '@graph': {
-        '@id': 'http://example.org/subject',
-        'http://example.org/predicate': {
-          '@id': '_:b1'
-        }
+      '@id': 'http://example.org/subject',
+      'http://example.org/predicate': {
+        '@id': '_:b1'
       }
     }]
 
@@ -193,12 +140,10 @@ describe('rdf-serializer-jsonld', () => {
       rdf.literal('object', 'en'))
 
     const jsonld = [{
-      '@graph': {
-        '@id': 'http://example.org/subject',
-        'http://example.org/predicate': {
-          '@language': 'en',
-          '@value': 'object'
-        }
+      '@id': 'http://example.org/subject',
+      'http://example.org/predicate': {
+        '@language': 'en',
+        '@value': 'object'
       }
     }]
 
@@ -228,12 +173,10 @@ describe('rdf-serializer-jsonld', () => {
       rdf.literal('object', rdf.namedNode('http://example.org/datatype')))
 
     const jsonld = [{
-      '@graph': {
-        '@id': 'http://example.org/subject',
-        'http://example.org/predicate': {
-          '@type': 'http://example.org/datatype',
-          '@value': 'object'
-        }
+      '@id': 'http://example.org/subject',
+      'http://example.org/predicate': {
+        '@type': 'http://example.org/datatype',
+        '@value': 'object'
       }
     }]
 
@@ -243,6 +186,92 @@ describe('rdf-serializer-jsonld', () => {
 
     input._read = () => {
       input.push(quad)
+      input.push(null)
+    }
+
+    const serializer = new JsonLdSerializer()
+    const stream = serializer.import(input)
+
+    return Promise.resolve().then(() => {
+      assert.deepEqual(stream.read(), jsonld)
+
+      return rdf.waitFor(stream)
+    })
+  })
+
+  it('should serialize quads with default graph into object root', () => {
+    const quad1 = rdf.quad(
+      rdf.namedNode('http://example.org/subject'),
+      rdf.namedNode('http://example.org/predicate'),
+      rdf.literal('object1'))
+
+    const quad2 = rdf.quad(
+      rdf.namedNode('http://example.org/subject'),
+      rdf.namedNode('http://example.org/predicate'),
+      rdf.literal('object2'))
+
+    const jsonld = [{
+      '@id': 'http://example.org/subject',
+      'http://example.org/predicate': 'object1'
+    }, {
+      '@id': 'http://example.org/subject',
+      'http://example.org/predicate': 'object2'
+    }]
+
+    const input = new Readable()
+
+    input._readableState.objectMode = true
+
+    input._read = () => {
+      input.push(quad1)
+      input.push(quad2)
+      input.push(null)
+    }
+
+    const serializer = new JsonLdSerializer()
+    const stream = serializer.import(input)
+
+    return Promise.resolve().then(() => {
+      assert.deepEqual(stream.read(), jsonld)
+
+      return rdf.waitFor(stream)
+    })
+  })
+
+  it('should serialize quads with named graph into @graph property', () => {
+    const quad1 = rdf.quad(
+      rdf.namedNode('http://example.org/subject'),
+      rdf.namedNode('http://example.org/predicate'),
+      rdf.literal('object1'),
+      rdf.namedNode('http://example.org/graph'))
+
+    const quad2 = rdf.quad(
+      rdf.namedNode('http://example.org/subject'),
+      rdf.namedNode('http://example.org/predicate'),
+      rdf.literal('object2'),
+      rdf.namedNode('http://example.org/graph'))
+
+    const jsonld = [{
+      '@id': 'http://example.org/graph',
+      '@graph': {
+        '@id': 'http://example.org/subject',
+        'http://example.org/predicate': 'object1'
+      }
+    }, {
+      '@id': 'http://example.org/graph',
+      '@graph': {
+        '@id': 'http://example.org/subject',
+        'http://example.org/predicate': 'object2'
+      }
+    }]
+
+    const input = new Readable()
+
+    input._readableState.objectMode = true
+
+    input._read = () => {
+      input.push(quad1)
+      input.push(quad2)
       input.push(null)
     }
 
