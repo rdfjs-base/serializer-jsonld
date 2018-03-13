@@ -22,7 +22,6 @@ describe('rdf-serializer-jsonld', () => {
       rdf.namedNode('http://example.org/graph'))
 
     const jsonld = [{
-      '@id': '@default',
       '@graph': {
         '@id': 'http://example.org/subject',
         'http://example.org/predicate': 'object1'
@@ -62,7 +61,6 @@ describe('rdf-serializer-jsonld', () => {
       rdf.namedNode('http://example.org/type'))
 
     const jsonld = [{
-      '@id': '@default',
       '@graph': {
         '@id': 'http://example.org/subject',
         '@type': 'http://example.org/type'
@@ -95,7 +93,6 @@ describe('rdf-serializer-jsonld', () => {
       rdf.literal('object'))
 
     const jsonld = [{
-      '@id': '@default',
       '@graph': {
         '@id': '_:b1',
         'http://example.org/predicate': 'object'
@@ -128,7 +125,6 @@ describe('rdf-serializer-jsonld', () => {
       rdf.namedNode('http://example.org/object'))
 
     const jsonld = [{
-      '@id': '@default',
       '@graph': {
         '@id': 'http://example.org/subject',
         'http://example.org/predicate': {
@@ -163,7 +159,6 @@ describe('rdf-serializer-jsonld', () => {
       rdf.blankNode('b1'))
 
     const jsonld = [{
-      '@id': '@default',
       '@graph': {
         '@id': 'http://example.org/subject',
         'http://example.org/predicate': {
@@ -198,7 +193,6 @@ describe('rdf-serializer-jsonld', () => {
       rdf.literal('object', 'en'))
 
     const jsonld = [{
-      '@id': '@default',
       '@graph': {
         '@id': 'http://example.org/subject',
         'http://example.org/predicate': {
@@ -234,7 +228,6 @@ describe('rdf-serializer-jsonld', () => {
       rdf.literal('object', rdf.namedNode('http://example.org/datatype')))
 
     const jsonld = [{
-      '@id': '@default',
       '@graph': {
         '@id': 'http://example.org/subject',
         'http://example.org/predicate': {
