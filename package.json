@@ -4,8 +4,7 @@
   "description": "JSON-LD serializer that implements the RDFJS Sink Interfaces",
   "main": "index.js",
   "scripts": {
-    "test": "standard && mocha",
-    "test-browser": "build-browser-test"
+    "test": "standard && mocha"
   },
   "repository": {
     "type": "git",
