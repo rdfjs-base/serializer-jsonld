@@ -1,12 +1,19 @@
 /* global describe, it */
 
 const assert = require('assert')
-const rdf = require('rdf-ext')
-const sinkTest = require('rdf-sink/test')
+const rdf = require('@rdfjs/data-model')
+const sinkTest = require('@rdfjs/sink/test')
 const Readable = require('readable-stream')
 const JsonLdSerializer = require('..')
 
-describe('rdf-serializer-jsonld', () => {
+function waitFor (stream) {
+  return new Promise((resolve, reject) => {
+    stream.on('end', resolve)
+    stream.on('error', reject)
+  })
+}
+
+describe('@rdfjs/serializer-jsonld', () => {
   sinkTest(JsonLdSerializer, {readable: true})
 
   it('should serialize rdf:type', () => {
@@ -20,14 +27,13 @@ describe('rdf-serializer-jsonld', () => {
       '@type': 'http://example.org/type'
     }]
 
-    const input = new Readable()
-
-    input._readableState.objectMode = true
-
-    input._read = () => {
-      input.push(quad)
-      input.push(null)
-    }
+    const input = new Readable({
+      objectMode: true,
+      read: () => {
+        input.push(quad)
+        input.push(null)
+      }
+    })
 
     const serializer = new JsonLdSerializer()
     const stream = serializer.import(input)
@@ -35,7 +41,7 @@ describe('rdf-serializer-jsonld', () => {
     return Promise.resolve().then(() => {
       assert.deepEqual(stream.read(), jsonld)
 
-      return rdf.waitFor(stream)
+      return waitFor(stream)
     })
   })
 
@@ -50,14 +56,13 @@ describe('rdf-serializer-jsonld', () => {
       'http://example.org/predicate': 'object'
     }]
 
-    const input = new Readable()
-
-    input._readableState.objectMode = true
-
-    input._read = () => {
-      input.push(quad)
-      input.push(null)
-    }
+    const input = new Readable({
+      objectMode: true,
+      read: () => {
+        input.push(quad)
+        input.push(null)
+      }
+    })
 
     const serializer = new JsonLdSerializer()
     const stream = serializer.import(input)
@@ -65,7 +70,7 @@ describe('rdf-serializer-jsonld', () => {
     return Promise.resolve().then(() => {
       assert.deepEqual(stream.read(), jsonld)
 
-      return rdf.waitFor(stream)
+      return waitFor(stream)
     })
   })
 
@@ -82,14 +87,13 @@ describe('rdf-serializer-jsonld', () => {
       }
     }]
 
-    const input = new Readable()
-
-    input._readableState.objectMode = true
-
-    input._read = () => {
-      input.push(quad)
-      input.push(null)
-    }
+    const input = new Readable({
+      objectMode: true,
+      read: () => {
+        input.push(quad)
+        input.push(null)
+      }
+    })
 
     const serializer = new JsonLdSerializer()
     const stream = serializer.import(input)
@@ -97,7 +101,7 @@ describe('rdf-serializer-jsonld', () => {
     return Promise.resolve().then(() => {
       assert.deepEqual(stream.read(), jsonld)
 
-      return rdf.waitFor(stream)
+      return waitFor(stream)
     })
   })
 
@@ -114,14 +118,13 @@ describe('rdf-serializer-jsonld', () => {
       }
     }]
 
-    const input = new Readable()
-
-    input._readableState.objectMode = true
-
-    input._read = () => {
-      input.push(quad)
-      input.push(null)
-    }
+    const input = new Readable({
+      objectMode: true,
+      read: () => {
+        input.push(quad)
+        input.push(null)
+      }
+    })
 
     const serializer = new JsonLdSerializer()
     const stream = serializer.import(input)
@@ -129,7 +132,7 @@ describe('rdf-serializer-jsonld', () => {
     return Promise.resolve().then(() => {
       assert.deepEqual(stream.read(), jsonld)
 
-      return rdf.waitFor(stream)
+      return waitFor(stream)
     })
   })
 
@@ -147,14 +150,13 @@ describe('rdf-serializer-jsonld', () => {
       }
     }]
 
-    const input = new Readable()
-
-    input._readableState.objectMode = true
-
-    input._read = () => {
-      input.push(quad)
-      input.push(null)
-    }
+    const input = new Readable({
+      objectMode: true,
+      read: () => {
+        input.push(quad)
+        input.push(null)
+      }
+    })
 
     const serializer = new JsonLdSerializer()
     const stream = serializer.import(input)
@@ -162,7 +164,7 @@ describe('rdf-serializer-jsonld', () => {
     return Promise.resolve().then(() => {
       assert.deepEqual(stream.read(), jsonld)
 
-      return rdf.waitFor(stream)
+      return waitFor(stream)
     })
   })
 
@@ -180,14 +182,13 @@ describe('rdf-serializer-jsonld', () => {
       }
     }]
 
-    const input = new Readable()
-
-    input._readableState.objectMode = true
-
-    input._read = () => {
-      input.push(quad)
-      input.push(null)
-    }
+    const input = new Readable({
+      objectMode: true,
+      read: () => {
+        input.push(quad)
+        input.push(null)
+      }
+    })
 
     const serializer = new JsonLdSerializer()
     const stream = serializer.import(input)
@@ -195,7 +196,7 @@ describe('rdf-serializer-jsonld', () => {
     return Promise.resolve().then(() => {
       assert.deepEqual(stream.read(), jsonld)
 
-      return rdf.waitFor(stream)
+      return waitFor(stream)
     })
   })
 
@@ -218,15 +219,14 @@ describe('rdf-serializer-jsonld', () => {
       'http://example.org/predicate': 'object2'
     }]
 
-    const input = new Readable()
-
-    input._readableState.objectMode = true
-
-    input._read = () => {
-      input.push(quad1)
-      input.push(quad2)
-      input.push(null)
-    }
+    const input = new Readable({
+      objectMode: true,
+      read: () => {
+        input.push(quad1)
+        input.push(quad2)
+        input.push(null)
+      }
+    })
 
     const serializer = new JsonLdSerializer()
     const stream = serializer.import(input)
@@ -234,7 +234,7 @@ describe('rdf-serializer-jsonld', () => {
     return Promise.resolve().then(() => {
       assert.deepEqual(stream.read(), jsonld)
 
-      return rdf.waitFor(stream)
+      return waitFor(stream)
     })
   })
 
@@ -265,15 +265,14 @@ describe('rdf-serializer-jsonld', () => {
       }
     }]
 
-    const input = new Readable()
-
-    input._readableState.objectMode = true
-
-    input._read = () => {
-      input.push(quad1)
-      input.push(quad2)
-      input.push(null)
-    }
+    const input = new Readable({
+      objectMode: true,
+      read: () => {
+        input.push(quad1)
+        input.push(quad2)
+        input.push(null)
+      }
+    })
 
     const serializer = new JsonLdSerializer()
     const stream = serializer.import(input)
@@ -281,7 +280,7 @@ describe('rdf-serializer-jsonld', () => {
     return Promise.resolve().then(() => {
       assert.deepEqual(stream.read(), jsonld)
 
-      return rdf.waitFor(stream)
+      return waitFor(stream)
     })
   })
 })
