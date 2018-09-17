@@ -19,7 +19,7 @@ The constructor doesn't need any options.
 This example shows how to create a serializer instance and how to feed it with a stream of quads.
 The object emitted by the serializer will be written to the console.
 
-```
+```javascript
 const rdf = require('@rdfjs/data-model')
 const Readable = require('stream').Readable
 const SerializerJsonld = require('@rdfjs/serializer-jsonld')
