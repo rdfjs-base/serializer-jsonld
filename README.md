@@ -11,8 +11,16 @@ JSON-LD serializer that implements the [RDFJS Sink interface](http://rdf.js.org/
 The package exports the serializer as a class, so an instance must be created before it can be used.
 The `.import` method, as defined in the [RDFJS specification](http://rdf.js.org/#sink-interface), must be called to do the actual serialization.
 It expects a quad stream as argument.
-The method will return a stream which emits the JSON-LD as a plain object.
-The constructor doesn't need any options.
+The method will return a stream which emits the JSON-LD as a plain object or string.
+
+The constructor accepts an `options` object with the following optional keys:
+
+- `encoding`: Defines the encoding of the output.
+  Supported encdoings are `string` and `object`.
+  By default `object` us used.
+
+It's also possible to pass options as second argument to the `.import` method.
+The options from the constructor and the `.import` method will be merged together.
 
 ### Example
 
