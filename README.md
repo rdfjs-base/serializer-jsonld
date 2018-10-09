@@ -16,8 +16,8 @@ The method will return a stream which emits the JSON-LD as a plain object or str
 The constructor accepts an `options` object with the following optional keys:
 
 - `encoding`: Defines the encoding of the output.
-  Supported encdoings are `string` and `object`.
-  By default `object` us used.
+  Supported encodings are `string` and `object`.
+  By default `object` is used.
 
 It's also possible to pass options as second argument to the `.import` method.
 The options from the constructor and the `.import` method will be merged together.
