@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@rdfjs/data-model": "^1.0.1",
+    "concat-stream": "^1.6.2",
     "mocha": "^5.2.0",
     "standard": "^11.0.1"
   },
