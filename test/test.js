@@ -256,6 +256,36 @@ describe('@rdfjs/serializer-jsonld', () => {
     })
   })
 
+  it('should not serialize datatype xsd:integer to plain int if NaN', () => {
+    const quad = rdf.quad(
+      rdf.namedNode('http://example.org/subject'),
+      rdf.namedNode('http://example.org/predicate'),
+      rdf.literal('text', rdf.namedNode('http://www.w3.org/2001/XMLSchema#integer')))
+
+    const jsonld = [{
+      '@id': 'http://example.org/subject',
+      'http://example.org/predicate': {
+        '@value': 'text',
+        '@type': 'http://www.w3.org/2001/XMLSchema#integer'
+      }
+    }]
+
+    const input = new Readable({
+      objectMode: true,
+      read: () => {
+        input.push(quad)
+        input.push(null)
+      }
+    })
+
+    const serializer = new JsonLdSerializer()
+    const stream = serializer.import(input)
+
+    return waitForContent(stream).then(content => {
+      assert.deepStrictEqual(content, jsonld)
+    })
+  })
+
   it('should serialize quads with default graph into object root', () => {
     const quad1 = rdf.quad(
       rdf.namedNode('http://example.org/subject'),
