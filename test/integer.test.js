@@ -63,4 +63,34 @@ describe('@rdfjs/serializer-jsonld integer serialization', () => {
       assert.deepStrictEqual(content, jsonld)
     })
   })
+
+  it('should not serialize datatype xsd:integer to plain int if decimal', () => {
+    const quad = rdf.quad(
+      rdf.namedNode('http://example.org/subject'),
+      rdf.namedNode('http://example.org/predicate'),
+      rdf.literal('3.14159', rdf.namedNode('http://www.w3.org/2001/XMLSchema#integer')))
+
+    const jsonld = [{
+      '@id': 'http://example.org/subject',
+      'http://example.org/predicate': {
+        '@value': '3.14159',
+        '@type': 'http://www.w3.org/2001/XMLSchema#integer'
+      }
+    }]
+
+    const input = new Readable({
+      objectMode: true,
+      read: () => {
+        input.push(quad)
+        input.push(null)
+      }
+    })
+
+    const serializer = new JsonLdSerializer()
+    const stream = serializer.import(input)
+
+    return waitForContent(stream).then(content => {
+      assert.deepStrictEqual(content, jsonld)
+    })
+  })
 })
