@@ -2,10 +2,8 @@ import * as Sink from '@rdfjs/sink';
 import { EventEmitter } from 'events';
 import { Stream } from 'rdf-js';
 
-type Encoding = 'string' | 'object';
-
 interface SerializerOptions {
-  encoding?: Encoding;
+  encoding?: 'string' | 'object';
 }
 
 declare class Serializer extends Sink {
