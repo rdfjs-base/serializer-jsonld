@@ -3,6 +3,7 @@
   "version": "1.2.1",
   "description": "JSON-LD serializer that implements the RDFJS Sink interface",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "standard && mocha"
   },
