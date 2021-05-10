@@ -24,6 +24,20 @@ describe('@rdfjs/serializer-jsonld', () => {
     deepStrictEqual(content[0], jsonld)
   })
 
+  it('should serialize blank node rdf:type', async () => {
+    const jsonld = [{
+      '@id': 'http://example.org/subject',
+      '@type': '_:b1'
+    }]
+    const quad = rdf.quad(ns.ex.subject, ns.rdf.type, rdf.blankNode('b1'))
+    const input = Readable.from([quad])
+    const serializer = new JsonLdSerializer()
+
+    const content = await getStream.array(serializer.import(input))
+
+    deepStrictEqual(content[0], jsonld)
+  })
+
   it('should serialize blank node subjects', async () => {
     const jsonld = [{
       '@id': '_:b1',
