@@ -23,16 +23,14 @@
   },
   "homepage": "https://github.com/rdfjs-base/serializer-jsonld",
   "dependencies": {
-    "@rdfjs/sink": "^1.0.2",
+    "@rdfjs/namespace": "^1.1.0",
+    "@rdfjs/sink": "^1.0.3",
     "readable-stream": "^3.6.0"
   },
   "devDependencies": {
-    "@rdfjs/data-model": "^1.0.1",
-    "concat-stream": "^1.6.2",
-    "mocha": "^5.2.0",
-    "standard": "^11.0.1"
-  },
-  "engines": {
-    "node": ">=6"
+    "@rdfjs/data-model": "^1.2.0",
+    "get-stream": "^6.0.1",
+    "mocha": "^8.4.0",
+    "standard": "^16.0.3"
   }
 }
