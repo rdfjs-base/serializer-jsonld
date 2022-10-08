@@ -1,11 +1,12 @@
-const { deepStrictEqual, throws } = require('assert')
-const rdf = require('@rdfjs/data-model')
-const sinkTest = require('@rdfjs/sink/test')
-const getStream = require('get-stream')
-const { describe, it } = require('mocha')
-const Readable = require('readable-stream')
-const ns = require('./support/namespaces')
-const JsonLdSerializer = require('..')
+import { deepStrictEqual, throws } from 'assert'
+import rdf from '@rdfjs/data-model'
+import sinkTest from '@rdfjs/sink/test/index.js'
+import { describe, it } from 'mocha'
+import { Readable } from 'readable-stream'
+import chunks from 'stream-chunks/chunks.js'
+import decode from 'stream-chunks/decode.js'
+import JsonLdSerializer from '../index.js'
+import * as ns from './support/namespaces.js'
 
 describe('@rdfjs/serializer-jsonld', () => {
   sinkTest(JsonLdSerializer, { readable: true })
@@ -19,7 +20,7 @@ describe('@rdfjs/serializer-jsonld', () => {
     const input = Readable.from([quad])
     const serializer = new JsonLdSerializer()
 
-    const content = await getStream.array(serializer.import(input))
+    const content = await chunks(serializer.import(input))
 
     deepStrictEqual(content[0], jsonld)
   })
@@ -33,7 +34,7 @@ describe('@rdfjs/serializer-jsonld', () => {
     const input = Readable.from([quad])
     const serializer = new JsonLdSerializer()
 
-    const content = await getStream.array(serializer.import(input))
+    const content = await chunks(serializer.import(input))
 
     deepStrictEqual(content[0], jsonld)
   })
@@ -47,7 +48,7 @@ describe('@rdfjs/serializer-jsonld', () => {
     const input = Readable.from([quad])
     const serializer = new JsonLdSerializer()
 
-    const content = await getStream.array(serializer.import(input))
+    const content = await chunks(serializer.import(input))
 
     deepStrictEqual(content[0], jsonld)
   })
@@ -63,7 +64,7 @@ describe('@rdfjs/serializer-jsonld', () => {
     const input = Readable.from([quad])
     const serializer = new JsonLdSerializer()
 
-    const content = await getStream.array(serializer.import(input))
+    const content = await chunks(serializer.import(input))
 
     deepStrictEqual(content[0], jsonld)
   })
@@ -79,7 +80,7 @@ describe('@rdfjs/serializer-jsonld', () => {
     const input = Readable.from([quad])
     const serializer = new JsonLdSerializer()
 
-    const content = await getStream.array(serializer.import(input))
+    const content = await chunks(serializer.import(input))
 
     deepStrictEqual(content[0], jsonld)
   })
@@ -93,7 +94,7 @@ describe('@rdfjs/serializer-jsonld', () => {
     const input = Readable.from([quad])
     const serializer = new JsonLdSerializer()
 
-    const content = await getStream.array(serializer.import(input))
+    const content = await chunks(serializer.import(input))
 
     deepStrictEqual(content[0], jsonld)
   })
@@ -110,7 +111,7 @@ describe('@rdfjs/serializer-jsonld', () => {
     const input = Readable.from([quad])
     const serializer = new JsonLdSerializer()
 
-    const content = await getStream.array(serializer.import(input))
+    const content = await chunks(serializer.import(input))
 
     deepStrictEqual(content[0], jsonld)
   })
@@ -127,7 +128,7 @@ describe('@rdfjs/serializer-jsonld', () => {
     const input = Readable.from([quad])
     const serializer = new JsonLdSerializer()
 
-    const content = await getStream.array(serializer.import(input))
+    const content = await chunks(serializer.import(input))
 
     deepStrictEqual(content[0], jsonld)
   })
@@ -145,7 +146,7 @@ describe('@rdfjs/serializer-jsonld', () => {
     const input = Readable.from([quad1, quad2])
     const serializer = new JsonLdSerializer()
 
-    const content = await getStream.array(serializer.import(input))
+    const content = await chunks(serializer.import(input))
 
     deepStrictEqual(content[0], jsonld)
   })
@@ -169,7 +170,7 @@ describe('@rdfjs/serializer-jsonld', () => {
     const input = Readable.from([quad1, quad2])
     const serializer = new JsonLdSerializer()
 
-    const content = await getStream.array(serializer.import(input))
+    const content = await chunks(serializer.import(input))
 
     deepStrictEqual(content[0], jsonld)
   })
@@ -187,7 +188,7 @@ describe('@rdfjs/serializer-jsonld', () => {
     const input = Readable.from([quad1, quad2])
     const serializer = new JsonLdSerializer({ encoding: 'object' })
 
-    const content = await getStream.array(serializer.import(input))
+    const content = await chunks(serializer.import(input))
 
     deepStrictEqual(content[0], jsonld)
   })
@@ -205,7 +206,7 @@ describe('@rdfjs/serializer-jsonld', () => {
     const input = Readable.from([quad1, quad2])
     const serializer = new JsonLdSerializer({ encoding: 'string' })
 
-    const content = await getStream(serializer.import(input))
+    const content = await decode(serializer.import(input))
 
     deepStrictEqual(JSON.parse(content), jsonld)
   })

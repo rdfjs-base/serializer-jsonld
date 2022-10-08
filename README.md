@@ -1,15 +1,13 @@
 # @rdfjs/serializer-jsonld
-
-[![Build Status](https://travis-ci.org/rdfjs/serializer-jsonld.svg?branch=master)](https://travis-ci.org/rdfjs/serializer-jsonld)
-
+[![build status](https://img.shields.io/github/workflow/status/rdfjs-base/serializer-jsonld/Test)](https://github.com/rdfjs-base/serializer-jsonld/actions/workflows/test.yaml)
 [![npm version](https://img.shields.io/npm/v/@rdfjs/serializer-jsonld.svg)](https://www.npmjs.com/package/@rdfjs/serializer-jsonld)
 
-JSON-LD serializer that implements the [RDFJS Sink interface](http://rdf.js.org/).
+JSON-LD serializer that implements the [RDF/JS Sink interface](http://rdf.js.org/).
 
 ## Usage
 
 The package exports the serializer as a class, so an instance must be created before it can be used.
-The `.import` method, as defined in the [RDFJS specification](http://rdf.js.org/#sink-interface), must be called to do the actual serialization.
+The `.import` method, as defined in the [RDF/JS specification](http://rdf.js.org/#sink-interface), must be called to do the actual serialization.
 It expects a quad stream as argument.
 The method will return a stream which emits the JSON-LD as a plain object or string.
 
@@ -28,9 +26,9 @@ This example shows how to create a serializer instance and how to feed it with a
 The object emitted by the serializer will be written to the console.
 
 ```javascript
-const rdf = require('@rdfjs/data-model')
-const Readable = require('stream').Readable
-const SerializerJsonld = require('@rdfjs/serializer-jsonld')
+import rdf from '@rdfjs/data-model'
+import { Readable } from 'readable-stream'
+import SerializerJsonld from '@rdfjs/serializer-jsonld'
 
 const serializerJsonld = new SerializerJsonld()
 const input = new Readable({
