@@ -1,5 +1,5 @@
 # @rdfjs/serializer-jsonld
-[![build status](https://img.shields.io/github/workflow/status/rdfjs-base/serializer-jsonld/Test)](https://github.com/rdfjs-base/serializer-jsonld/actions/workflows/test.yaml)
+[![build status](https://img.shields.io/github/actions/workflow/status/rdfjs-base/serializer-jsonld/test.yaml?branch=master)](https://github.com/rdfjs-base/serializer-jsonld/actions/workflows/test.yaml)
 [![npm version](https://img.shields.io/npm/v/@rdfjs/serializer-jsonld.svg)](https://www.npmjs.com/package/@rdfjs/serializer-jsonld)
 
 JSON-LD serializer that implements the [RDF/JS Sink interface](http://rdf.js.org/).
